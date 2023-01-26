@@ -42,26 +42,10 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemGray5
         setupSubViews(verticalStackView)
-        setupConstraints()
+        setupConstraints(for: verticalStackView)
     }
     
-    //MARK: - Private Methods
-    private func setupSubViews(_ subViews: UIView...) {
-        subViews.forEach { subview in
-            view.addSubview(subview)
-        }
-    }
-    
-    private func setupConstraints() {
-        verticalStackView.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            verticalStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            verticalStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            verticalStackView.widthAnchor.constraint(equalToConstant: view.bounds.width * 0.7)
-        ])
-    }
-    
+    //MARK: - Private Methods    
     @objc private func enterButtonTapped() {
         guard let inputURLText = urlTextField.text, !inputURLText.isEmpty else {return}
         

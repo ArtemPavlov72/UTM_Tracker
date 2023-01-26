@@ -10,7 +10,7 @@ import UIKit
 class UTMViewController: UIViewController {
     
     //MARK: - Public Properties
-    var url: String!
+    var url: String?
     
     //MARK: - Private Properties
     private var utmDataDict = [String: String]()
@@ -143,25 +143,26 @@ class UTMViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        getLabelsInfo(from: url)
+        getLabelsInfo(from: url ?? "")
         setupSubViews(utmInfoStackView)
-        setupConstraints()
+        setupConstraints(for: utmInfoStackView)
         putDataToUTMDataDict()
         print("\(utmDataDict)") // test for watching info from dict of utm specs
     }
     
     //MARK: - Private Methods
-    private func getQueryStringParameter(fromUrl: String, param: String) -> String? {
-        guard let url = URLComponents(string: url) else { return nil }
-        return url.queryItems?.first(where: { $0.name == param })?.value
+    private func getQueryStringParameter(fromURL: String, parameter: String) -> String? {
+        guard let url = url else { return nil }
+        guard let urlCompData = URLComponents(string: url) else { return nil }
+        return urlCompData.queryItems?.first(where: { $0.name == parameter })?.value
     }
     
     private func getLabelsInfo(from url: String) {
-        sourceDataLabel.text = getQueryStringParameter(fromUrl: url, param: "utm_source")
-        mediumDataLabel.text = getQueryStringParameter(fromUrl: url, param: "utm_medium")
-        campaignDataLabel.text = getQueryStringParameter(fromUrl: url, param: "utm_campaign")
-        contentDataLabel.text = getQueryStringParameter(fromUrl: url, param: "utm_content")
-        termDataLabel.text = getQueryStringParameter(fromUrl: url, param: "utm_term")
+        sourceDataLabel.text = getQueryStringParameter(fromURL: url, parameter: "utm_source")
+        mediumDataLabel.text = getQueryStringParameter(fromURL: url, parameter: "utm_medium")
+        campaignDataLabel.text = getQueryStringParameter(fromURL: url, parameter: "utm_campaign")
+        contentDataLabel.text = getQueryStringParameter(fromURL: url, parameter: "utm_content")
+        termDataLabel.text = getQueryStringParameter(fromURL: url, parameter: "utm_term")
     }
     
     private func putDataToUTMDataDict() {
@@ -172,22 +173,6 @@ class UTMViewController: UIViewController {
             "utm_content": "\(contentDataLabel.text ?? "")",
             "utm_term": "\(termDataLabel.text ?? "")"
         ]
-    }
-    
-    private func setupSubViews(_ subViews: UIView...) {
-        subViews.forEach { subview in
-            view.addSubview(subview)
-        }
-    }
-    
-    private func setupConstraints() {
-        utmInfoStackView.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            utmInfoStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            utmInfoStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            utmInfoStackView.widthAnchor.constraint(equalToConstant: view.bounds.width * 0.9)
-        ])
     }
 }
 
